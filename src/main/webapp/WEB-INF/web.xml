@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>bws</display-name>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+  <servlet>
+    <description></description>
+    <display-name>tree</display-name>
+    <servlet-name>tree</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.tree.AjaxTree</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>tree</servlet-name>
+    <url-pattern>/tree</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>Terminal</display-name>
+    <servlet-name>Terminal</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.Terminal</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Terminal</servlet-name>
+    <url-pattern>/terminal</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>SaveTextFile</display-name>
+    <servlet-name>SaveTextFile</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.action.SaveTextFile</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SaveTextFile</servlet-name>
+    <url-pattern>/terminal/saveTextFile</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>Upload</display-name>
+    <servlet-name>Upload</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.action.Upload</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Upload</servlet-name>
+    <url-pattern>/terminal/upload</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>KillProcess</display-name>
+    <servlet-name>KillProcess</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.action.KillProcess</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>KillProcess</servlet-name>
+    <url-pattern>/terminal/kill</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>AutoComplete</display-name>
+    <servlet-name>AutoComplete</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.action.AutoComplete</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AutoComplete</servlet-name>
+    <url-pattern>/terminal/complete</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>ChangeDir</display-name>
+    <servlet-name>ChangeDir</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.action.ChangeDir</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ChangeDir</servlet-name>
+    <url-pattern>/terminal/cd</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <display-name>ExecuteCommand</display-name>
+    <servlet-name>ExecuteCommand</servlet-name>
+    <servlet-class>com.nicolasbouvie.ws.terminal.action.ExecuteCommand</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ExecuteCommand</servlet-name>
+    <url-pattern>/terminal/exec</url-pattern>
+  </servlet-mapping>
+</web-app>
