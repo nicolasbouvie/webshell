@@ -51,8 +51,9 @@
 	<SCRIPT type="text/javascript">
 		var timer;
 		var locked 		  = false;
-		var bufIdx 		  = 0;
-		var commandBuffer = [];
+        var commandBuffer = localStorage.getItem("commandBuffer");
+        commandBuffer = commandBuffer !== null ? commandBuffer.split(",") : [];
+		var bufIdx 		  = commandBuffer.length;
 		var currentPath   = "<%=Terminal.HOME.getCanonicalPath()%>";
         var previousPath  = "<%=Terminal.HOME.getCanonicalPath()%>";
 		var isUp    = function(e) { return e.keyCode == 38;              };
@@ -217,8 +218,11 @@
 						exec(cmd, isEndPage());
 					}
 				}
-				commandBuffer[commandBuffer.length] = cmd;
-				bufIdx = commandBuffer.length;
+                if (cmd.trim().length > 0 && commandBuffer[commandBuffer.length-1] !== btoa(cmd)) {
+                    commandBuffer[commandBuffer.length] = btoa(cmd);
+                    localStorage.setItem("commandBuffer", commandBuffer.slice(commandBuffer.length-20));
+                }
+                bufIdx = commandBuffer.length;
 				return false;
 			} else if (isTab(e)) {
 				var sp = cmd.split(/\s+/);
@@ -259,14 +263,15 @@
 				return false;
 			} else if (isUp(e)) {
 				if (bufIdx > 0) {
-					$("#command").html(commandBuffer[--bufIdx]);
+					$("#command").html(atob(commandBuffer[--bufIdx]));
 				}
 				doScroll(true);
 				return false;
 			} else if (isDown(e)) {
 				if (bufIdx < commandBuffer.length-1) {
-					$("#command").html(commandBuffer[++bufIdx]);
+					$("#command").html(atob(commandBuffer[++bufIdx]));
 				} else if (commandBuffer.length == bufIdx+1) {
+                    bufIdx = commandBuffer.length;
 					$("#command").html("&nbsp;");
 				}
 				doScroll(true);
