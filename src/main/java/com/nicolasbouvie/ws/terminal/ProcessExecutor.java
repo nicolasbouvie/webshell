@@ -130,7 +130,7 @@ public class ProcessExecutor implements HttpSessionBindingListener, Serializable
 	private void initWriters(LinkedList<String> commandParts, File wd) throws IOException {
 		if (commandParts.peekFirst().equals("wsget") || commandParts.peekFirst().equals("wsedit")) {
 			if (commandParts.size() != 2) {
-				throw new IllegalArgumentException("Wrong number of arguments, please provide file to download. "+commandParts.peekFirst()+" <file>");
+				throw new IllegalArgumentException("Wrong number of arguments, please provide a file as second argument.");
 			}
 		}
 
