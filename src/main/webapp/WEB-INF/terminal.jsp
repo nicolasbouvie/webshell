@@ -77,10 +77,10 @@
 			$("#path, #command").hide();
 		};
 		
-		var unlock = function() {
+		var unlock = function(focus) {
 			locked = false;
 			$("#path, #command").show();
-            commandFocus();
+            if (focus) commandFocus();
 		};
 		
 		var commandFocus = function() {
@@ -130,7 +130,9 @@
 									}
 								}
 							).init(atob(sp[2]));
-                            d.out = "";
+                            $("#terminal").append("");
+                            unlock(false);
+                            return;
                         }
 						$("#terminal").append(d.out);
 					}
@@ -141,7 +143,7 @@
 					}
 					
 					if (d.finished) {
-						unlock();
+						unlock(true);
 					} else if (locked) {
 						timer = setTimeout(function() {exec(cmd, isEndPage());}, 500);
 					}
@@ -157,7 +159,7 @@
 		$("html").keydown(function(e){
 			if (isCtrlC(e)) {
 				clearTimeout(timer);
-				unlock();
+				unlock(true);
 				$("#command").html("&nbsp;");
 				$.post("${pageContext.request.contextPath}/terminal/kill");
 				bufIdx = commandBuffer.length;
@@ -188,7 +190,7 @@
 								} else {
 									$("#terminal").append(d.message + "<br/>");
 								}
-								unlock();
+								unlock(true);
 								doScroll(true);
 							}, "text"
 						);
