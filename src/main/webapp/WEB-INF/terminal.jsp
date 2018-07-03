@@ -110,7 +110,8 @@
                         if (d.out.startsWith("wsedit://")) {
                             var sp = d.out.split("//");
                             $("#terminalDiv").hide();
-                            var filename = "<%=request.getAttribute("workingDir") %>/"+sp[1];
+                            var path = $("#path").html().slice(0, -1);
+                            var filename = path+"/"+sp[1];
                             newEditor(document.body,
 								{
 								    filename: filename,
