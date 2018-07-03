@@ -1,13 +1,16 @@
 function newEditor(appendTo, params) {
+    function defVal(param, defVal) {
+        return param !== undefined && param !== null ? param : defVal;
+    }
     var options = {
-        lineNumbers: params.lineNumbers || true,
-        readOnly: params.readOnly || false,
-        filename: params.filename || "",
-        showModes: params.showModes || true,
-        showThemes: params.showThemes || true,
-        showKeymap: params.showKeymap || true,
-        onclose: params.onclose || function() {},
-        onsave: params.onsave || function () {}
+        lineNumbers: defVal(params.lineNumbers, true),
+        readOnly:    defVal(params.readOnly,    false),
+        filename:    defVal(params.filename,    ""),
+        showModes:   defVal(params.showModes,   true),
+        showThemes:  defVal(params.showThemes,  true),
+        showKeymap:  defVal(params.showKeymap,  false),
+        onclose:     defVal(params.onclose,     function() {}),
+        onsave:      defVal(params.onsave,      function () {})
     };
     var self = this;
     this.init = init;
