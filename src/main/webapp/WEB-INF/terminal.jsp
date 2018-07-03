@@ -37,7 +37,8 @@
 	<div id="terminalDiv">
 		<form id="upload" method="post" action="terminal/upload" enctype="multipart/form-data">
 			<input class="box__file" type="file" name="files[]" id="file" data-multiple-caption="{count} files selected" style="display: none" multiple/>
-			Upload area
+			<input name="<%=Terminal.WORKING_DIR_PARAM%>" id="uploadWD" style="display: none;" value="<%=request.getAttribute("workingDir") %>"/>
+			<span>Upload area</span>
 		</form>
 <pre id="terminal">
 <%@ include file="welcome.txt" %>
@@ -295,6 +296,7 @@
 
         var droppedFiles = false;
         var uploadForm = $("#upload");
+        var uploadText = $("#upload span");
         uploadForm.on('drag dragstart dragend dragover dragenter dragleave drop', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -303,9 +305,12 @@
 
             e.preventDefault();
 
+            $("#uploadWD").val(currentPath);
             var ajaxData = new FormData(uploadForm.get(0));
 
             if (droppedFiles) {
+                lock();
+                uploadText.text("Uploading...");
                 $.each( droppedFiles, function(i, file) {
                     ajaxData.append( $("#input").attr('name'), file );
                 });
@@ -320,14 +325,17 @@
                     processData: false,
                     success: function(data) {
                         if (data.error) {
-                            uploadForm.text(data.error);
+                            uploadText.text(data.error);
 						} else {
-                            uploadForm.text("Success!");
+                            uploadText.text("Success!");
 						}
-                        setTimeout(function() {uploadForm.text("Upload area");}, 5000);
+                        setTimeout(function() {uploadText.text("Upload area");}, 5000);
+                        unlock(true);
                     },
-                    error: function() {
-                        // Log the error, show an alert, whatever works for you
+                    error: function(e) {
+                        uploadText.text(e);
+                        setTimeout(function() {uploadText.text("Upload area");}, 5000);
+                        unlock(true);
                     }
                 });
             }

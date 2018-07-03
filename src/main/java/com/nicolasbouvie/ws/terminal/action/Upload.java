@@ -19,14 +19,10 @@ public class Upload extends Terminal {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        File wd = getWorkingDir(req);
-        if (!wd.canWrite()) {
-            throw new ServletException("Invalid path, no permission to write");
-        }
-
         JsonObject json = new JsonObject();
         try {
             List<FileItem> items = new ServletFileUpload(new DiskFileItemFactory()).parseRequest(req);
+            File wd = getWorkingDir(items);
             for (FileItem item : items) {
                 String fileName = FilenameUtils.getName(item.getName());
                 File file = new File(wd.getAbsolutePath() + File.separator + fileName);
@@ -43,5 +39,18 @@ public class Upload extends Terminal {
             throw new ServletException("Cannot parse multipart request.", e);
         }
         json.print(resp);
+    }
+
+    private File getWorkingDir(List<FileItem> items) throws ServletException {
+        for (FileItem item : items) {
+            if (Terminal.WORKING_DIR_PARAM.equals(item.getFieldName())) {
+                File wd = new File(item.getString());
+                if (!wd.canWrite()) {
+                    throw new ServletException("Invalid path, no permission to write");
+                }
+                return wd;
+            }
+        }
+        throw new ServletException("Missing working directory.");
     }
 }
