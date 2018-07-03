@@ -3,6 +3,7 @@
 <%@page import="com.nicolasbouvie.ws.terminal.action.AutoComplete"%>
 <%@page import="com.nicolasbouvie.ws.terminal.ProcessExecutor"%>
 <%@ page import="com.nicolasbouvie.ws.terminal.action.SaveTextFile" %>
+<%@ page import="com.nicolasbouvie.ws.terminal.Terminal" %>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>Web Shell</title>
@@ -52,6 +53,8 @@
 		var locked 		  = false;
 		var bufIdx 		  = 0;
 		var commandBuffer = [];
+		var currentPath   = "<%=Terminal.HOME.getCanonicalPath()%>";
+        var previousPath  = "<%=Terminal.HOME.getCanonicalPath()%>";
 		var isUp    = function(e) { return e.keyCode == 38;              };
 		var isDown  = function(e) { return e.keyCode == 40;              };
 		var isEnter = function(e) { return e.keyCode == 13;              };
@@ -99,7 +102,7 @@
 
 		var exec = function(cmd, scroll) {
 			$.post("${pageContext.request.contextPath}/terminal/exec", 
-				{'<%=ExecuteCommand.PARAM %>': cmd}, 
+				{'<%=ExecuteCommand.PARAM %>': cmd, '<%=Terminal.WORKING_DIR_PARAM%>': currentPath},
 				function(d) {
 					d = getObject(d);
 					if (d.hasOwnProperty("out")) {
@@ -110,8 +113,7 @@
                         if (d.out.startsWith("wsedit://")) {
                             var sp = d.out.split("//");
                             $("#terminalDiv").hide();
-                            var path = $("#path").html().slice(0, -1);
-                            var filename = path+"/"+sp[1];
+                            var filename = currentPath+"/"+sp[1];
                             newEditor(document.body,
 								{
 								    filename: filename,
@@ -180,20 +182,31 @@
 				} else {
 					$("#terminal").append($("#path").html() + cmd + "<br/>");
 					lock();
-					if (cmd.indexOf("cd") == 0) {
-						$.post("${pageContext.request.contextPath}/terminal/cd", 
-							{'<%=ChangeDir.PARAM%>':cmd.substring(3)}, 
-							function(d) {
-								d = getObject(d);
-								if (d.hasOwnProperty("workingDir")) {
-									$("#path").html(d.workingDir + "$");
-								} else {
-									$("#terminal").append(d.message + "<br/>");
-								}
-								unlock(true);
-								doScroll(true);
-							}, "text"
-						);
+					if (cmd.indexOf("cd") === 0) {
+					    if (cmd.substring(3).trim() === "-") {
+                            $("#path").html(previousPath + "$");
+                            var aux = previousPath;
+                            previousPath = currentPath;
+                            currentPath = aux;
+                            unlock(true);
+                            doScroll(true);
+						} else {
+							$.post("${pageContext.request.contextPath}/terminal/cd",
+								{'<%=ChangeDir.PARAM%>':cmd.substring(3), '<%=Terminal.WORKING_DIR_PARAM%>': currentPath},
+								function(d) {
+									d = getObject(d);
+									if (d.hasOwnProperty("workingDir")) {
+										previousPath = currentPath;
+										currentPath = d.workingDir;
+										$("#path").html(d.workingDir + "$");
+									} else {
+										$("#terminal").append(d.message + "<br/>");
+									}
+									unlock(true);
+									doScroll(true);
+								}, "text"
+							);
+						}
 					} else {
 						exec(cmd, isEndPage());
 					}
@@ -206,7 +219,7 @@
 				if (sp.length == 1) {
 					var path = sp[0];
 					$.post("${pageContext.request.contextPath}/terminal/complete", 
-						{'<%=AutoComplete.PARAM_CMD %>': path}, 
+						{'<%=AutoComplete.PARAM_CMD %>': path, '<%=Terminal.WORKING_DIR_PARAM%>': currentPath},
 						function(d) {
 							d = getObject(d);
 							$("#terminal").append($("#path").html() + cmd + "<br/>");
@@ -223,7 +236,7 @@
 					//path
 					var path = sp[sp.length-1];
 					$.post("${pageContext.request.contextPath}/terminal/complete", 
-						{'<%=AutoComplete.PARAM %>': path}, 
+						{'<%=AutoComplete.PARAM %>': path, '<%=Terminal.WORKING_DIR_PARAM%>': currentPath},
 						function(d) {
 							d = getObject(d);
 							$("#terminal").append($("#path").html() + cmd + "<br/>");

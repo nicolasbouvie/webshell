@@ -4,19 +4,12 @@ import com.nicolasbouvie.ws.terminal.Terminal;
 import com.nicolasbouvie.ws.terminal.util.Html;
 import com.nicolasbouvie.ws.terminal.util.JsonObject;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeSet;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import java.util.*;
 
 public class AutoComplete extends Terminal {
 	private static final long serialVersionUID = 3400432427828175396L;
@@ -58,7 +51,6 @@ public class AutoComplete extends Terminal {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		HttpSession session = request.getSession();
 		final String cmd = request.getParameter(PARAM_CMD);
 		final String complete;
 		if (cmd != null && (cmd.startsWith(".") || cmd.startsWith(File.separator))) {
@@ -69,7 +61,7 @@ public class AutoComplete extends Terminal {
 		JsonObject json = new JsonObject();
 		
 		if (complete != null) {
-			File path = getWorkingDir(session);
+			File path = getWorkingDir(request);
 			
 			String lastDir = getNormalizedPath(path, complete);
 			String lastPart = complete;

@@ -19,7 +19,7 @@ public class Upload extends Terminal {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        File wd = getWorkingDir(req.getSession());
+        File wd = getWorkingDir(req);
         if (!wd.canWrite()) {
             throw new ServletException("Invalid path, no permission to write");
         }

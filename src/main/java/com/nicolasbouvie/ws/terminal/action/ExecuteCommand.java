@@ -25,7 +25,7 @@ public class ExecuteCommand extends Terminal {
 		ProcessExecutor process = (ProcessExecutor) session.getAttribute(EXECUTOR_SESSION_KEY);
 		if (process == null) {
 			try {
-				process = new ProcessExecutor(cmd, getWorkingDir(session));
+				process = new ProcessExecutor(cmd, getWorkingDir(request));
 			} catch (Exception e) {
 				json.setParam("error", e.getMessage() + Html.NEW_LINE);
 				json.setParam("finished", "true");
