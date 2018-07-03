@@ -78,6 +78,7 @@ function newEditor(appendTo, params) {
     function destroy() {
         priv.modeInput.remove();
         priv.themeInput.remove();
+        priv.keysInput.remove();
         priv.editorArea.nextSibling.remove();
         priv.editorArea.remove();
         for (var p in priv) {
@@ -90,10 +91,11 @@ function newEditor(appendTo, params) {
 
     function appendControllers() {
         var controllers = document.createElement("div");
-        controllers.style = "height: 20px;";
+        controllers.style = "height: 40px; width: 100%";
 
         if ((options.filename||"").length > 0) {
             var filenameInput = document.createElement("span");
+            filenameInput.style = "width: 100%";
             filenameInput.textContent = options.filename;
 
             var fileExt = filenameInput.textContent.substring(filenameInput.textContent.lastIndexOf(".") + 1);
@@ -112,9 +114,11 @@ function newEditor(appendTo, params) {
         priv.modeInput.value = mode.name;
         priv.keysInput.value = localStorage.getItem("keymap") || "vim";
 
-        controllers.append(priv.themeInput);
-        controllers.append(priv.modeInput);
-        controllers.append(priv.keysInput);
+        var commands = document.createElement("div");
+        commands.append(priv.themeInput);
+        commands.append(priv.modeInput);
+        commands.append(priv.keysInput);
+        controllers.append(commands);
 
         priv.editorArea.nextSibling.prepend(controllers);
     }
@@ -146,7 +150,7 @@ function newEditor(appendTo, params) {
 
     function newDropdown(visible, opts, onChange) {
         var select = document.createElement("select");
-        select.style = "float: right"+(!visible ? "; display:none" : "");
+        if (!visible) select.style = "display:none";
         select.onchange = onChange;
         for (var i = 0; i < opts.length; i++) {
             var opt = opts[i];
