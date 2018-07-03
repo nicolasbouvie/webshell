@@ -198,7 +198,13 @@
 									if (d.hasOwnProperty("workingDir")) {
 										previousPath = currentPath;
 										currentPath = d.workingDir;
-										$("#path").html(d.workingDir + "$");
+
+										var formatWD = d.workingDir.split('/');
+										if (formatWD.length > 4) {
+                                            formatWD.splice(2,formatWD.length-4, "...");
+										}
+										formatWD = formatWD.join("/");
+										$("#path").html(formatWD + "$");
 									} else {
 										$("#terminal").append(d.message + "<br/>");
 									}
